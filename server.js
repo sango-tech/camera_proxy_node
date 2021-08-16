@@ -1,7 +1,7 @@
 var express = require("express");
 var script = require("./index");
 if (process.argv.length < 3) {
-	console.log("node test.js <STREAM URL> [PORT]");
+	console.log("node serve.js <STREAM URL> [PORT]");
 	process.exit(1);
 }
 var url = process.argv[2];
