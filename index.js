@@ -1,20 +1,43 @@
 var events = require("events");
-var http = require('http'); // let try require("https") if wrong
+var fs = require('fs');
+var https = require('https'); 
+var http = require('http');
+
 exports.Proxy = function (opts) {
 	if (!opts) throw new Error("No options provided!");
 	if (typeof opts === "string" || opts instanceof String) {
 		var url = require("url").parse(opts);
 		opts = {
-			port: url.port || 80,
 			host: url.hostname,
 			method: "GET",
-			path: url.pathname + (url.search ? url.search : "")
+			path: url.pathname + (url.search ? url.search : ""),
+			rejectUnauthorized: false, // i'm trying to add 'ca': fs.readFile(certain.pem)
 		};
+
+		if (url.auth) {
+			opts = {...opts, auth: url.auth}
+		}
+
+		if (url.protocol) {
+			opts = {...opts, protocol: url.protocol}
+		}
+
+		if (url.port) {
+			opts = {...opts, port: url.port}
+		}
 	}
+
 	var serverHeaders = null;
 	var clients = [];
 	/* Begin consuming stream */
-	var stream = http.request(opts);
+	var stream = null;
+	if (opts.protocol.includes('https')) {
+		opts.agent = https.Agent(opts)
+		stream = https.request(opts)
+	} else {
+		opts.agent = http.Agent(opts)
+		stream = http.request(opts)
+	}
 	stream.end();
 	/* Got a response from the stream */
 	stream.on("response", function (res) {
