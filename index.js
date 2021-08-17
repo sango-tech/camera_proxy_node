@@ -62,7 +62,7 @@ exports.Proxy = function (opts) {
 			"Expires": "Mon, 01 Jul 1980 00:00:00 GMT",
 			"Cache-Control": "no-cache, no-store, must-revalidate",
 			"Pragma": "no-cache",
-			"Content-Type": serverHeaders["content-type"]
+			// "Content-Type": serverHeaders["content-type"]
 		});
 		clients.push(res);
 		emitter.emit("addClient");
